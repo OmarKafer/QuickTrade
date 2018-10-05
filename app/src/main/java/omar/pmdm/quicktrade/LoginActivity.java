@@ -34,7 +34,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void comprobarUsuario(View v) {
         // Comprobamos que ninguno de los campos sea una cadena vacia, en caso de serlo devolvemos false;
-        if((usuario.getText().equals("")) || (password.getText().equals(""))) {
+        if((usuario.getText().toString().compareTo("") != 0) || (password.getText().toString().compareTo("") != 0)) {
             Log.d("Depuración", "Una de las cadenas está vacía");
         }
         Usuario u1;
@@ -45,8 +45,8 @@ public class LoginActivity extends AppCompatActivity {
             Log.d("Depuración", "Usuario a comparar: " + u1.getEmail());
             Log.d("Depuración", "Contraseña introducida: " + password.getText());
             Log.d("Depuración", "Contraseña a comparar: " + u1.getPassword());
-            if(usuario.getText().equals(u1.getEmail())) {
-                if(password.getText().equals(u1.getPassword())) {
+            if(usuario.getText().toString().compareTo(u1.getEmail()) == 0) {
+                if(password.getText().toString().compareTo(u1.getPassword()) == 0) {
                     Log.d("Depuración", "El usuario y la clave son correctas");
                 }
             }
