@@ -39,7 +39,7 @@ public class LoginActivity extends AppCompatActivity {
         btnRegistrar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent i = new Intent(v.getContext(), RegistroActivity.class);
-                i.putExtra("listaUsuarios", listaUsuarios);
+                //i.putExtra("listaUsuarios", listaUsuarios); // ESTO DA ERROR //////////////////////////////////////////////
                 startActivityForResult(i, 0);
             }
         });

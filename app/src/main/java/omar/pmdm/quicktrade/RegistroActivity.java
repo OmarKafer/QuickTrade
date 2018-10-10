@@ -17,13 +17,22 @@ public class RegistroActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro);
 
-        final Button btnCancelar = (Button) findViewById(R.id.btnCancelar);
-        final Button btnGuardar = (Button) findViewById(R.id.btnGuardar);
-        Bundle bundle = getIntent().getExtras();
-        final ArrayList<Usuario> listaUsuarios = (ArrayList<Usuario>) bundle.getSerializable("listaUsuarios");
+        //final Button btnCancelar = (Button) findViewById(R.id.btnCancelar);
+        //final Button btnGuardar = (Button) findViewById(R.id.btnGuardar);
+        //Bundle bundle = getIntent().getExtras();
+        //final ArrayList<Usuario> listaUsuarios = (ArrayList<Usuario>) bundle.getSerializable("listaUsuarios");
 
+        // TEST ///////////////////////////////////////////////////////////////////
+        //EditText nombre = (EditText) findViewById(R.id.txtId);
 
-        // Listener del botón "btnCancelar"
+        //if (listaUsuarios.isEmpty()) {
+            //nombre.setText("Array vacío");
+        //} else {
+            //nombre.setText("Array contiene cosas");
+        //}
+        // TEST ///////////////////////////////////////////////////////////////////
+
+        /*// Listener del botón "btnCancelar"
         btnCancelar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent i = new Intent(v.getContext(), LoginActivity.class);
@@ -38,9 +47,9 @@ public class RegistroActivity extends AppCompatActivity {
                 Intent i = new Intent(v.getContext(), LoginActivity.class);
                 startActivityForResult(i, 0);
             }
-        });
+        });*/
     }
-
+    /*
     private void guardarUsuario(ArrayList<Usuario> listaUsuarios) {
         if(comprobarCampos()) {
             EditText idUsuario = (EditText) findViewById(R.id.txtId);
@@ -74,5 +83,5 @@ public class RegistroActivity extends AppCompatActivity {
         } else {
             return true;
         }
-    }
+    }*/
 }
