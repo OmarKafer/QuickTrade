@@ -3,6 +3,7 @@ package omar.pmdm.quicktrade;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,22 +18,10 @@ public class RegistroActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro);
 
-        //final Button btnCancelar = (Button) findViewById(R.id.btnCancelar);
-        //final Button btnGuardar = (Button) findViewById(R.id.btnGuardar);
-        //Bundle bundle = getIntent().getExtras();
-        //final ArrayList<Usuario> listaUsuarios = (ArrayList<Usuario>) bundle.getSerializable("listaUsuarios");
+        final Button btnCancelar = (Button) findViewById(R.id.btnCancelar);
+        final Button btnGuardar = (Button) findViewById(R.id.btnGuardar);
 
-        // TEST ///////////////////////////////////////////////////////////////////
-        //EditText nombre = (EditText) findViewById(R.id.txtId);
-
-        //if (listaUsuarios.isEmpty()) {
-            //nombre.setText("Array vacío");
-        //} else {
-            //nombre.setText("Array contiene cosas");
-        //}
-        // TEST ///////////////////////////////////////////////////////////////////
-
-        /*// Listener del botón "btnCancelar"
+        // Listener del botón "btnCancelar"
         btnCancelar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent i = new Intent(v.getContext(), LoginActivity.class);
@@ -43,33 +32,41 @@ public class RegistroActivity extends AppCompatActivity {
         // Listener del botón "btnGuardar"
         btnGuardar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                guardarUsuario(listaUsuarios);
-                Intent i = new Intent(v.getContext(), LoginActivity.class);
-                startActivityForResult(i, 0);
+                Usuario u1 = guardarUsuario();
+                if (u1 != null) {
+                    Intent i = new Intent();
+                    i.putExtra("Usuario", u1);
+                    setResult(RESULT_OK, i);
+                    finish();
+                } else {
+                    Log.d("Depuracion", "Error al guardar el usuario");
+                }
             }
-        });*/
+        });
     }
-    /*
-    private void guardarUsuario(ArrayList<Usuario> listaUsuarios) {
+
+    private Usuario guardarUsuario() {
         if(comprobarCampos()) {
             EditText idUsuario = (EditText) findViewById(R.id.txtId);
-            EditText nombre = (EditText) findViewById(R.id.txtId);
-            EditText apellidos = (EditText) findViewById(R.id.txtId);
-            EditText email = (EditText) findViewById(R.id.txtId);
-            EditText password = (EditText) findViewById(R.id.txtId);
-            EditText telefono = (EditText) findViewById(R.id.txtId);
+            EditText nombre = (EditText) findViewById(R.id.txtNombre);
+            EditText apellidos = (EditText) findViewById(R.id.txtApellidos);
+            EditText email = (EditText) findViewById(R.id.txtEmail);
+            EditText password = (EditText) findViewById(R.id.txtPassword);
+            EditText telefono = (EditText) findViewById(R.id.txtTelefono);
             Usuario u1 = new Usuario(Integer.parseInt(idUsuario.getText().toString()), nombre.getText().toString(), apellidos.getText().toString(), email.getText().toString(), password.getText().toString(), telefono.getText().toString());
-            listaUsuarios.add(u1);
+            return u1;
+        } else {
+            return null;
         }
     }
 
     private boolean comprobarCampos() {
         EditText idUsuario = (EditText) findViewById(R.id.txtId);
-        EditText nombre = (EditText) findViewById(R.id.txtId);
-        EditText apellidos = (EditText) findViewById(R.id.txtId);
-        EditText email = (EditText) findViewById(R.id.txtId);
-        EditText password = (EditText) findViewById(R.id.txtId);
-        EditText telefono = (EditText) findViewById(R.id.txtId);
+        EditText nombre = (EditText) findViewById(R.id.txtNombre);
+        EditText apellidos = (EditText) findViewById(R.id.txtApellidos);
+        EditText email = (EditText) findViewById(R.id.txtEmail);
+        EditText password = (EditText) findViewById(R.id.txtPassword);
+        EditText telefono = (EditText) findViewById(R.id.txtTelefono);
         RadioButton hombre = (RadioButton) findViewById(R.id.rbHombre);
         RadioButton mujer = (RadioButton) findViewById(R.id.rbMujer);
         if(idUsuario.getText().toString().compareTo("") == 0 ||
@@ -83,5 +80,5 @@ public class RegistroActivity extends AppCompatActivity {
         } else {
             return true;
         }
-    }*/
+    }
 }

@@ -1,6 +1,9 @@
 package omar.pmdm.quicktrade;
 
-public class Usuario {
+import android.os.Parcelable;
+import android.os.Parcel;
+
+public class Usuario implements Parcelable {
     int idUsuario;
     String nombre;
     String apellidos;
@@ -64,4 +67,41 @@ public class Usuario {
     public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
+
+    protected Usuario(Parcel in) {
+        idUsuario = in.readInt();
+        nombre = in.readString();
+        apellidos = in.readString();
+        email = in.readString();
+        password = in.readString();
+        telefono = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(idUsuario);
+        dest.writeString(nombre);
+        dest.writeString(apellidos);
+        dest.writeString(email);
+        dest.writeString(password);
+        dest.writeString(telefono);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Usuario> CREATOR = new Parcelable.Creator<Usuario>() {
+        @Override
+        public Usuario createFromParcel(Parcel in) {
+            return new Usuario(in);
+        }
+
+        @Override
+        public Usuario[] newArray(int size) {
+            return new Usuario[size];
+        }
+    };
 }

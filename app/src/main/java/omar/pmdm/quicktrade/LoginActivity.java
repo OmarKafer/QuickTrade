@@ -47,6 +47,12 @@ public class LoginActivity extends AppCompatActivity {
         guardarUsuario(1, "Manel", "Viel", "mviel@florida-uni.es", "1234", "654321098");
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent i) {
+        Usuario u1 = i.getExtras().getParcelable("Usuario");
+        listaUsuarios.add(u1);
+    }
+
     private void guardarUsuario(int idUser, String nombre, String apellidos, String email, String password, String telefono) {
         Usuario u1 = new Usuario(idUser, nombre, apellidos, email, password, telefono);
         listaUsuarios.add(u1);
