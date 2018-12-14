@@ -1,17 +1,35 @@
 package omar.pmdm.quicktrade;
 
-import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioButton;
+import android.widget.Toast;
 
-import java.util.ArrayList;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import omar.pmdm.quicktrade.Modelo.Usuario;
 
 public class RegistroActivity extends AppCompatActivity {
+
+    private FirebaseAuth mAuth;
+    DatabaseReference database;
+
+    EditText nombreUsuario;
+    EditText nombre;
+    EditText apellidos;
+    EditText email;
+    EditText password;
+    EditText direccion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,65 +38,81 @@ public class RegistroActivity extends AppCompatActivity {
 
         final Button btnCancelar = (Button) findViewById(R.id.btnCancelar);
         final Button btnGuardar = (Button) findViewById(R.id.btnGuardar);
+        nombreUsuario = (EditText) findViewById(R.id.txtNombreUsuario);
+        nombre = (EditText) findViewById(R.id.txtNombre);
+        apellidos = (EditText) findViewById(R.id.txtApellidos);
+        email = (EditText) findViewById(R.id.txtEmail);
+        password = (EditText) findViewById(R.id.txtPassword);
+        direccion = (EditText) findViewById(R.id.txtDireccion);
+
+
+        mAuth = FirebaseAuth.getInstance();
+        database = FirebaseDatabase.getInstance().getReference("usuarios");
 
         // Listener del botón "btnCancelar"
         btnCancelar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent i = new Intent(v.getContext(), LoginActivity.class);
-                startActivityForResult(i, 0);
+                setResult(RESULT_CANCELED); // Manda un 0.
+                finish();
             }
         });
 
         // Listener del botón "btnGuardar"
         btnGuardar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Usuario u1 = guardarUsuario();
-                if (u1 != null) {
-                    Intent i = new Intent();
-                    i.putExtra("Usuario", u1);
-                    setResult(RESULT_OK, i);
-                    finish();
-                } else {
-                    Log.d("Depuracion", "Error al guardar el usuario");
-                }
+                registrarUsuario();
             }
         });
     }
 
-    private Usuario guardarUsuario() {
-        if(comprobarCampos()) {
-            EditText idUsuario = (EditText) findViewById(R.id.txtId);
-            EditText nombre = (EditText) findViewById(R.id.txtNombre);
-            EditText apellidos = (EditText) findViewById(R.id.txtApellidos);
+    private void registrarUsuario() {
+        if(comprobarCampos() && !comprobarUsuario()) {
             EditText email = (EditText) findViewById(R.id.txtEmail);
             EditText password = (EditText) findViewById(R.id.txtPassword);
-            EditText telefono = (EditText) findViewById(R.id.txtTelefono);
-            Usuario u1 = new Usuario(Integer.parseInt(idUsuario.getText().toString()), nombre.getText().toString(), apellidos.getText().toString(), email.getText().toString(), password.getText().toString(), telefono.getText().toString());
-            return u1;
+
+
+            mAuth.createUserWithEmailAndPassword(email.getText().toString(), password.getText().toString())
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(getApplicationContext(), "Usuario creado con éxito.", Toast.LENGTH_SHORT).show();
+                                introducirDatos(mAuth.getCurrentUser());
+                                mAuth.getInstance().signOut();
+                                setResult(RESULT_OK); // Manda un -1
+                                finish();
+                            } else {
+                                Toast.makeText(getApplicationContext(), "ERROR: " + task.getException(), Toast.LENGTH_SHORT).show();
+                                setResult(RESULT_FIRST_USER); // Manda un 1
+                                finish();
+                            }
+                        }
+                    });
         } else {
-            return null;
+            Toast.makeText(getApplicationContext(), "ERROR: Comprueba los campos", Toast.LENGTH_LONG).show();
         }
     }
 
     private boolean comprobarCampos() {
-        EditText idUsuario = (EditText) findViewById(R.id.txtId);
-        EditText nombre = (EditText) findViewById(R.id.txtNombre);
-        EditText apellidos = (EditText) findViewById(R.id.txtApellidos);
-        EditText email = (EditText) findViewById(R.id.txtEmail);
-        EditText password = (EditText) findViewById(R.id.txtPassword);
-        EditText telefono = (EditText) findViewById(R.id.txtTelefono);
-        RadioButton hombre = (RadioButton) findViewById(R.id.rbHombre);
-        RadioButton mujer = (RadioButton) findViewById(R.id.rbMujer);
-        if(idUsuario.getText().toString().compareTo("") == 0 ||
-                nombre.getText().toString().compareTo("") == 0 ||
+        if(nombre.getText().toString().compareTo("") == 0 ||
+                nombreUsuario.getText().toString().compareTo("") == 0 ||
                 apellidos.getText().toString().compareTo("") == 0 ||
                 email.getText().toString().compareTo("") == 0 ||
                 password.getText().toString().compareTo("") == 0 ||
-                telefono.getText().toString().compareTo("") == 0 ||
-                (!hombre.isChecked() && !mujer.isChecked())) {
+                direccion.getText().toString().compareTo("") == 0) {
             return false;
         } else {
             return true;
         }
+    }
+
+    private void introducirDatos(FirebaseUser user) {
+        Usuario usuario = new Usuario(nombreUsuario.getText().toString(), nombre.getText().toString(), apellidos.getText().toString(), direccion.getText().toString());
+        database.child(user.getUid()).setValue(usuario);
+    }
+
+
+    private boolean comprobarUsuario() {
+        return false;
     }
 }
