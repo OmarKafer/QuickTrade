@@ -3,7 +3,6 @@ package omar.pmdm.quicktrade;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,8 +13,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import omar.pmdm.quicktrade.Modelo.Usuario;
 
@@ -60,37 +63,63 @@ public class RegistroActivity extends AppCompatActivity {
         // Listener del botón "btnGuardar"
         btnGuardar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                registrarUsuario();
+                registrarUsuario(nombreUsuario.getText().toString());
             }
         });
     }
 
-    private void registrarUsuario() {
-        if(comprobarCampos() && !comprobarUsuario()) {
-            EditText email = (EditText) findViewById(R.id.txtEmail);
-            EditText password = (EditText) findViewById(R.id.txtPassword);
+    boolean res;
+    private void registrarUsuario(final String nombreUsuario) {
+        res = false;
+        Query q = database.orderByChild("nombreUsuario");
+
+        q.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot i: dataSnapshot.getChildren()) {
+                    Usuario u = i.getValue(Usuario.class);
+                    if (u.getNombreUsuario().compareToIgnoreCase(nombreUsuario) == 0) {
+                        res = true;
+                    }
+                }
+                if(comprobarCampos() && !res) {
+                    introducirUsuario();
+                } else {
+                    Toast.makeText(getApplicationContext(), "ERROR: Comprueba los campos, o el nombre de usuario ya existe.", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void introducirUsuario() {
+
+        EditText email = (EditText) findViewById(R.id.txtEmail);
+        EditText password = (EditText) findViewById(R.id.txtPassword);
 
 
-            mAuth.createUserWithEmailAndPassword(email.getText().toString(), password.getText().toString())
-                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                Toast.makeText(getApplicationContext(), "Usuario creado con éxito.", Toast.LENGTH_SHORT).show();
-                                introducirDatos(mAuth.getCurrentUser());
-                                mAuth.getInstance().signOut();
-                                setResult(RESULT_OK); // Manda un -1
-                                finish();
-                            } else {
-                                Toast.makeText(getApplicationContext(), "ERROR: " + task.getException(), Toast.LENGTH_SHORT).show();
-                                setResult(RESULT_FIRST_USER); // Manda un 1
-                                finish();
-                            }
+        mAuth.createUserWithEmailAndPassword(email.getText().toString(), password.getText().toString())
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(getApplicationContext(), "Usuario creado con éxito.", Toast.LENGTH_SHORT).show();
+                            introducirDatos(mAuth.getCurrentUser());
+                            mAuth.getInstance().signOut();
+                            setResult(RESULT_OK); // Manda un -1
+                            finish();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "ERROR: " + task.getException(), Toast.LENGTH_LONG).show();
+                            setResult(RESULT_FIRST_USER); // Manda un 1
+                            finish();
                         }
-                    });
-        } else {
-            Toast.makeText(getApplicationContext(), "ERROR: Comprueba los campos", Toast.LENGTH_LONG).show();
-        }
+                    }
+                });
     }
 
     private boolean comprobarCampos() {
@@ -107,12 +136,8 @@ public class RegistroActivity extends AppCompatActivity {
     }
 
     private void introducirDatos(FirebaseUser user) {
-        Usuario usuario = new Usuario(nombreUsuario.getText().toString(), nombre.getText().toString(), apellidos.getText().toString(), direccion.getText().toString());
+        Usuario usuario = new Usuario(nombreUsuario.getText().toString(), nombre.getText().toString(), apellidos.getText().toString(), direccion.getText().toString(), user.getUid());
         database.child(user.getUid()).setValue(usuario);
     }
 
-
-    private boolean comprobarUsuario() {
-        return false;
-    }
 }
