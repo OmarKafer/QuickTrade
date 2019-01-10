@@ -7,19 +7,19 @@ public class Producto {
     private String descripcion;
     private String categoria;
     private double precio;
-    private Usuario usuario;
+    private String idUsuario;
 
     public Producto() {
 
     }
 
-    public Producto(String idProducto, String nombre, String descripcion, String categoria, double precio, Usuario usuario) {
+    public Producto(String idProducto, String nombre, String descripcion, String categoria, double precio, String idUsuario) {
         this.idProducto = idProducto;
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.categoria = categoria;
         this.precio = precio;
-        this.usuario = usuario;
+        this.idUsuario = idUsuario;
     }
 
     public String getIdProducto() {
@@ -62,11 +62,11 @@ public class Producto {
         this.precio = precio;
     }
 
-    public Usuario getUsuario() {
-        return usuario;
+    public String getIdUsuario() {
+        return idUsuario;
     }
 
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
+    public void setIdUsuario(String idUsuario) {
+        this.idUsuario = idUsuario;
     }
 }

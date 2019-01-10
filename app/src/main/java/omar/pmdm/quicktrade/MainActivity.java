@@ -28,8 +28,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     TextView txtBienvenida;
     Button btnEditarUsuario;
+    Button btnAnyadirProducto;
 
     final static int EditarUsuarioActivity = 0;
+    final static int AnyadirProductoActivity = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +41,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         txtBienvenida = findViewById(R.id.txtBienvenida);
         btnEditarUsuario = findViewById(R.id.btnEditarUsuario);
         btnEditarUsuario.setOnClickListener(this);
+        btnAnyadirProducto = findViewById(R.id.btnAnyadirProducto);
+        btnAnyadirProducto.setOnClickListener(this);
         recuperarUsuario();
 
     }
@@ -54,7 +58,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot i: dataSnapshot.getChildren()) {
                     usuarioActual = i.getValue(Usuario.class);
-
                 }
             }
 
@@ -67,12 +70,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
+        Intent i;
         switch (view.getId()) {
             case R.id.btnEditarUsuario:
-                Intent i = new Intent(getApplicationContext(), EditarUsuarioActivity.class);
+                i = new Intent(getApplicationContext(), EditarUsuarioActivity.class);
                 i.putExtra("Usuario", usuarioActual);
                 startActivityForResult(i, EditarUsuarioActivity);
                 break;
+
+            case R.id.btnAnyadirProducto:
+                i = new Intent(getApplicationContext(), AnyadirProductoActivity.class);
+                i.putExtra("Usuario", usuarioActual);
+                startActivityForResult(i, AnyadirProductoActivity);
         }
     }
 

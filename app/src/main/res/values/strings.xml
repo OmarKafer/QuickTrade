@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">QuickTrade</string>
+
+    <string-array name="categorias">
+        <item>Tecnología</item>
+        <item>Coches</item>
+        <item>Hogar</item>
+    </string-array>
 </resources>

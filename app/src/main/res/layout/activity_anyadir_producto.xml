@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AnyadirProductoActivity"
+    tools:layout_editor_absoluteY="25dp">
+
+    <EditText
+        android:id="@+id/txtNombre"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="73dp"
+        android:layout_marginTop="190dp"
+        android:ems="10"
+        android:hint="Nombre"
+        android:inputType="textPersonName"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/txtDescripcion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:ems="10"
+        android:hint="Descripción"
+        android:inputType="textPersonName"
+        app:layout_constraintStart_toStartOf="@+id/txtNombre"
+        app:layout_constraintTop_toBottomOf="@+id/txtNombre" />
+
+    <Spinner
+        android:id="@+id/spinnerCategoria"
+        android:layout_width="216dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="76dp"
+        android:layout_marginTop="73dp"
+        app:layout_constraintBottom_toBottomOf="@+id/txtPrecio"
+        app:layout_constraintStart_toStartOf="@+id/txtDescripcion"
+        app:layout_constraintTop_toTopOf="@+id/txtDescripcion" />
+
+    <EditText
+        android:id="@+id/txtPrecio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="34dp"
+        android:ems="10"
+        android:hint="Precio"
+        android:inputType="numberDecimal"
+        app:layout_constraintBottom_toTopOf="@+id/btnCancelar"
+        app:layout_constraintStart_toStartOf="@+id/spinnerCategoria" />
+
+    <Button
+        android:id="@+id/btnCancelar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="27dp"
+        android:layout_marginStart="38dp"
+        android:text="CANCELAR"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/btnGuardar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="27dp"
+        android:layout_marginEnd="67dp"
+        android:text="GUARDAR"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
+</android.support.constraint.ConstraintLayout>
