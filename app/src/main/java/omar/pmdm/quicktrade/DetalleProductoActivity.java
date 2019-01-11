@@ -1,14 +1,17 @@
 package omar.pmdm.quicktrade;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -16,8 +19,12 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 
 import omar.pmdm.quicktrade.Modelo.Producto;
@@ -34,6 +41,7 @@ public class DetalleProductoActivity extends AppCompatActivity implements TextWa
     private TextView lblNombre, lblDescripcion, lblPrecio, lblCategoria;
     private Spinner spinnerCategoria;
     private Button btnGuardar, btnSalir, btnEliminar;
+    private CheckBox cbFavorito;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,9 +72,12 @@ public class DetalleProductoActivity extends AppCompatActivity implements TextWa
         btnSalir.setOnClickListener(this);
         btnEliminar = findViewById(R.id.btnEliminar);
         btnEliminar.setOnClickListener(this);
+        cbFavorito = findViewById(R.id.cbFavorito);
+
 
         cargarCampos();
         cargarLabelProducto();
+        comprobarFavorito();
 
         spinnerCategoria.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -80,6 +91,24 @@ public class DetalleProductoActivity extends AppCompatActivity implements TextWa
             }
         });
 
+    }
+
+    private void comprobarFavorito() {
+        DatabaseReference bbdd = FirebaseDatabase.getInstance().getReference("usuarios").child(usuarioActual.getUserID()).child("favoritos");
+        Query q = bbdd.orderByChild("idProducto").equalTo(productoActual.getIdProducto());
+        q.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot i: dataSnapshot.getChildren()) {
+                    cbFavorito.setChecked(true);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void cargarCampos() {
@@ -98,6 +127,7 @@ public class DetalleProductoActivity extends AppCompatActivity implements TextWa
             txtPrecio.setEnabled(false);
             spinnerCategoria.setEnabled(false);
             btnGuardar.setEnabled(false);
+            btnEliminar.setEnabled(false);
         }
     }
 
@@ -129,6 +159,7 @@ public class DetalleProductoActivity extends AppCompatActivity implements TextWa
         switch (view.getId()) {
             case R.id.btnGuardar:
                 if(guardarProducto()) {
+                    estadoFavorito();
                     setResult(RESULT_OK);
                     Toast.makeText(getApplicationContext(), "Producto editado con exito !", Toast.LENGTH_SHORT).show();
                     startActivity(i);
@@ -137,6 +168,7 @@ public class DetalleProductoActivity extends AppCompatActivity implements TextWa
                 }
                 break;
             case R.id.btnSalir:
+                estadoFavorito();
                 setResult(RESULT_CANCELED);
                 startActivity(i);
                 break;
@@ -153,11 +185,22 @@ public class DetalleProductoActivity extends AppCompatActivity implements TextWa
     }
 
     private boolean guardarProducto() {
+        DatabaseReference bbdd = FirebaseDatabase.getInstance().getReference("usuarios").child(usuarioActual.getUserID());
+
         productoActual.setNombre(txtNombre.getText().toString());
         productoActual.setDescripcion(txtDescripcion.getText().toString());
         productoActual.setPrecio(Double.parseDouble(txtPrecio.getText().toString()));
         productoActual.setCategoria(spinnerCategoria.getSelectedItem().toString());
         database.child(productoActual.getIdProducto()).setValue(productoActual);
         return true;
+    }
+
+    private void estadoFavorito() {
+        DatabaseReference bbdd = FirebaseDatabase.getInstance().getReference("usuarios").child(usuarioActual.getUserID());
+        if(cbFavorito.isChecked()) {
+            bbdd.child("favoritos").child(productoActual.getIdProducto()).child("idProducto").setValue(productoActual.getIdProducto());
+        } else {
+            bbdd.child("favoritos").child(productoActual.getIdProducto()).removeValue();
+        }
     }
 }

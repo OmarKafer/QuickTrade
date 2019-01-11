@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button btnAnyadirProducto;
     private Spinner spinnerCategoria, spinnerUsuario;
     private RecyclerView recyclerViewProductos;
+    private ImageView btnFavoritos;
 
     private LinearLayoutManager linearLayoutManager;
     private AdaptadorRecyclerProductos adaptadorRecyclerProductos;
@@ -46,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     final static int EditarUsuarioActivity = 0;
     final static int AnyadirProductoActivity = 1;
     final static int DetalleProductoActivity = 2;
+    final static int FavoritosActivity = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +66,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         recyclerViewProductos = findViewById(R.id.recyclerProductos);
         linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerViewProductos.setLayoutManager(linearLayoutManager);
+        btnFavoritos = findViewById(R.id.btnFavoritos);
+        btnFavoritos.setOnClickListener(this);
 
         recuperarUsuario();
         cargarSpinners();
@@ -162,13 +167,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             listadoProductos.add(p);
                         }
                     }
-                    if(usuario.compareToIgnoreCase(usuarioActual.getNombreUsuario()) == 0) {
-                        adaptadorRecyclerProductos = new AdaptadorRecyclerProductos(listadoProductos);
-                        recyclerViewProductos.setAdapter(adaptadorRecyclerProductos);
-                    } else {
-                        adaptadorRecyclerProductos = new AdaptadorRecyclerProductos(listadoProductos);
-                        recyclerViewProductos.setAdapter(adaptadorRecyclerProductos);
-                    }
+                    adaptadorRecyclerProductos = new AdaptadorRecyclerProductos(listadoProductos);
+                    recyclerViewProductos.setAdapter(adaptadorRecyclerProductos);
                 }
 
                 @Override
@@ -213,13 +213,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 listadoProductos.add(p);
                             }
                         }
-                        if(usuario.compareToIgnoreCase(usuarioActual.getNombreUsuario()) == 0) {
-                            adaptadorRecyclerProductos = new AdaptadorRecyclerProductos(listadoProductos);
-                            recyclerViewProductos.setAdapter(adaptadorRecyclerProductos);
-                        } else {
-                            adaptadorRecyclerProductos = new AdaptadorRecyclerProductos(listadoProductos);
-                            recyclerViewProductos.setAdapter(adaptadorRecyclerProductos);
-                        }
+                        adaptadorRecyclerProductos = new AdaptadorRecyclerProductos(listadoProductos);
+                        recyclerViewProductos.setAdapter(adaptadorRecyclerProductos);
                     }
 
                     @Override
@@ -286,6 +281,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 i = new Intent(getApplicationContext(), AnyadirProductoActivity.class);
                 i.putExtra("Usuario", usuarioActual);
                 startActivityForResult(i, AnyadirProductoActivity);
+                break;
+            case R.id.btnFavoritos:
+                i = new Intent(getApplicationContext(), FavoritosActivity.class);
+                startActivityForResult(i, FavoritosActivity);
+                break;
         }
     }
 
@@ -328,6 +328,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         break;
 
                 }
+                break;
+            case FavoritosActivity:
                 break;
         }
     }

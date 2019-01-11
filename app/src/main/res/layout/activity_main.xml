@@ -39,16 +39,23 @@
         <Button
             android:id="@+id/btnEditarUsuario"
             android:layout_width="0dp"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:layout_height="match_parent"
             android:text="EDITAR USUARIO" />
 
         <Button
             android:id="@+id/btnAnyadirProducto"
             android:layout_width="0dp"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:layout_height="match_parent"
             android:text="AÑADIR PRODUCTO" />
+
+        <ImageView
+            android:id="@+id/btnFavoritos"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@android:drawable/star_off"/>
 
     </LinearLayout>
 
