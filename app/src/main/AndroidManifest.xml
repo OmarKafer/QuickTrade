@@ -19,7 +19,8 @@
         <activity android:name=".RegistroActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".EditarUsuarioActivity" />
-        <activity android:name=".AnyadirProductoActivity"></activity>
+        <activity android:name=".AnyadirProductoActivity" />
+        <activity android:name=".DetalleProductoActivity"></activity>
     </application>
 
 </manifest>

@@ -43,27 +43,6 @@
         android:layout_height="wrap_content"
         android:text="Movil nuevo con poco uso, lo vendo para poder comprarme el iPhone X que me gusta más y va mejor, no compres este, es una mierda." />
 
-    <LinearLayout
-        android:id="@+id/pnlOpciones"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center">
-
-        <ImageView android:id="@+id/icnBorrar"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:src="@android:drawable/ic_delete"/>
-
-        <ImageView android:id="@+id/icnEditar"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:src="@android:drawable/ic_menu_edit"/>
-
-    </LinearLayout>
-
     <TextView
         android:layout_width="match_parent"
         android:layout_height="0.1dp"

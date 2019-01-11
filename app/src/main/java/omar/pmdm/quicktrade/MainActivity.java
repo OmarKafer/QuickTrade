@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     final static int EditarUsuarioActivity = 0;
     final static int AnyadirProductoActivity = 1;
+    final static int DetalleProductoActivity = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,10 +163,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         }
                     }
                     if(usuario.compareToIgnoreCase(usuarioActual.getNombreUsuario()) == 0) {
-                        adaptadorRecyclerProductos = new AdaptadorRecyclerProductos(listadoProductos, true);
+                        adaptadorRecyclerProductos = new AdaptadorRecyclerProductos(listadoProductos);
                         recyclerViewProductos.setAdapter(adaptadorRecyclerProductos);
                     } else {
-                        adaptadorRecyclerProductos = new AdaptadorRecyclerProductos(listadoProductos, false);
+                        adaptadorRecyclerProductos = new AdaptadorRecyclerProductos(listadoProductos);
                         recyclerViewProductos.setAdapter(adaptadorRecyclerProductos);
                     }
                 }
@@ -188,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 listadoProductos.add(p);
                             }
                         }
-                        adaptadorRecyclerProductos = new AdaptadorRecyclerProductos(listadoProductos, false);
+                        adaptadorRecyclerProductos = new AdaptadorRecyclerProductos(listadoProductos);
                         recyclerViewProductos.setAdapter(adaptadorRecyclerProductos);
                     }
 
@@ -212,10 +214,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             }
                         }
                         if(usuario.compareToIgnoreCase(usuarioActual.getNombreUsuario()) == 0) {
-                            adaptadorRecyclerProductos = new AdaptadorRecyclerProductos(listadoProductos, true);
+                            adaptadorRecyclerProductos = new AdaptadorRecyclerProductos(listadoProductos);
                             recyclerViewProductos.setAdapter(adaptadorRecyclerProductos);
                         } else {
-                            adaptadorRecyclerProductos = new AdaptadorRecyclerProductos(listadoProductos, false);
+                            adaptadorRecyclerProductos = new AdaptadorRecyclerProductos(listadoProductos);
                             recyclerViewProductos.setAdapter(adaptadorRecyclerProductos);
                         }
                     }
@@ -236,7 +238,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             Producto p = i.getValue(Producto.class);
                             listadoProductos.add(p);
                         }
-                        adaptadorRecyclerProductos = new AdaptadorRecyclerProductos(listadoProductos, false);
+                        adaptadorRecyclerProductos = new AdaptadorRecyclerProductos(listadoProductos);
                         recyclerViewProductos.setAdapter(adaptadorRecyclerProductos);
                     }
 
@@ -247,6 +249,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 });
                 Log.d("Omar", "Sin filtros");
             }
+            recyclerViewProductos.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerViewProductos, new RecyclerTouchListener.ClickListener() {
+                @Override
+                public void onClick(View view, int position) {
+                    Producto p = adaptadorRecyclerProductos.getPosProducto(position);
+                    Intent i = new Intent(getApplicationContext(), DetalleProductoActivity.class);
+                    i.putExtra("Usuario", usuarioActual);
+                    i.putExtra("Producto", p);
+                    startActivityForResult(i, DetalleProductoActivity);
+                }
+
+                @Override
+                public void onLongClick(View view, int position) {
+
+                }
+            }));
         }
     }
 
@@ -278,10 +295,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case EditarUsuarioActivity:
                 switch (resultCode) {
                     case RESULT_OK:
+                        recargarListado();
                         usuarioActual = i.getParcelableExtra("Usuario");
                         Toast.makeText(getApplicationContext(), "Usuario editado correctamente.", Toast.LENGTH_SHORT).show();
                         break;
                     case RESULT_CANCELED:
+                        recargarListado();
                         Toast.makeText(getApplicationContext(), "No se han hecho cambios.", Toast.LENGTH_SHORT).show();
                         break;
                 }
@@ -289,12 +308,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case AnyadirProductoActivity:
                 switch (resultCode) {
                     case RESULT_OK:
+                        recargarListado();
                         Toast.makeText(getApplicationContext(), "Producto añadido con éxito", Toast.LENGTH_SHORT).show();
                         break;
                     case RESULT_CANCELED:
+                        recargarListado();
                         Toast.makeText(getApplicationContext(), "No se ha añadido ningún producto", Toast.LENGTH_SHORT).show();
                         break;
                 }
+                break;
+            case DetalleProductoActivity:
+                switch (resultCode) {
+                    case RESULT_OK:
+                        Log.d("Omar", "He vuelto donde debería haber vuelto");
+                        recargarListado();
+                        break;
+                    case RESULT_CANCELED:
+                        recargarListado();
+                        break;
+
+                }
+                break;
         }
+    }
+
+    private void recargarListado() {
+        spinnerUsuario.setSelection(0);
+        spinnerCategoria.setSelection(0);
+        listarProductos(false, false, null, null);
     }
 }
