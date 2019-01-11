@@ -75,7 +75,7 @@ public class AnyadirProductoActivity extends AppCompatActivity implements View.O
     private boolean anyadirProducto() {
         if(comprobarCampos()) {
             String idProducto = database.push().getKey();
-            Producto p = new Producto(idProducto, txtNombre.getText().toString(), txtDescripion.getText().toString(), spinnerCategoria.getSelectedItem().toString(), Double.parseDouble(txtPrecio.getText().toString()), usuarioActual.getUserID());
+            Producto p = new Producto(idProducto, txtNombre.getText().toString(), txtDescripion.getText().toString(), spinnerCategoria.getSelectedItem().toString(), Double.parseDouble(txtPrecio.getText().toString()), usuarioActual.getNombreUsuario());
             database.child(idProducto).setValue(p);
             return true;
         } else {
